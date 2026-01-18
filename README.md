@@ -16,6 +16,13 @@ graph TD
     end
 ```
 
+## Security & Limitations
+> [!WARNING]
+> **No Authentication**: This application currently uses "honor-system" login. Users enter their name to log in, and there are **no passwords**.
+> - **Public Access**: Any user can log in as any other user if they know the name.
+> - **Data Privacy**: Do not store sensitive personal information in this version.
+> - **Future Work**: Implementing OAuth or Password-based Auth is recommended for v0.2.0.
+
 ## Deployment Guide
 
 If you want to deploy this application to your own Google Cloud project, follow these steps.
