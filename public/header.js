@@ -13,7 +13,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
             // Create User Name element
             const userSpan = document.createElement("span");
-            userSpan.textContent = `Hi, ${user}`;
+            userSpan.textContent = `Logged in as ${user}`;
             userSpan.style.color = "var(--accent-green)"; // Use theme color
             userSpan.style.fontWeight = "600";
             userSpan.style.marginRight = "1rem";
@@ -23,12 +23,14 @@ document.addEventListener("DOMContentLoaded", function () {
             const signOutBtn = document.createElement("a");
             signOutBtn.href = "#";
             signOutBtn.textContent = "Sign Out";
-            signOutBtn.className = "btn-logout"; // We can style this or reuse existing classes
-            // Inline style for immediate feedback, but class is better
+            signOutBtn.className = "btn-logout";
+
+            // Inline style
             signOutBtn.style.border = "1px solid white";
             signOutBtn.style.padding = "0.4rem 1rem";
             signOutBtn.style.borderRadius = "20px";
             signOutBtn.style.fontSize = "0.9rem";
+            signOutBtn.style.cursor = "pointer";
 
             signOutBtn.addEventListener("click", function (e) {
                 e.preventDefault();
