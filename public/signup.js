@@ -62,7 +62,8 @@ submit.addEventListener("submit", async function (e) {
             alert("Sign up successful! Please log in.");
             window.location.href = "login.html";
         } else {
-            alert("Sign up failed. Please try again.");
+            console.error(result);
+            alert("Sign up failed: " + result.statusText);
         }
     } catch (error) {
         console.error("Error signing up:", error);
