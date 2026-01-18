@@ -2,6 +2,8 @@
 
 A running club application for ESMO, built with Node.js.
 
+### 🚀 [Live Demo](https://esmo-runclub-305548427367.northamerica-northeast1.run.app/)
+
 ## Architecture
 
 ```mermaid
