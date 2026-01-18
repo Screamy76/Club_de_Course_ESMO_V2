@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Run Club</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Montserrat:wght@600;700;800&display=swap"
+        rel="stylesheet">
+
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <!-- Animated Background -->
+    <div class="animated-bg"></div>
+
+    <!-- Page Wrapper -->
+    <div class="page-wrapper">
+        <div class="card fade-in">
+            <!-- Card Header -->
+            <div class="card-header">
+                <h1 class="card-title">Welcome Back</h1>
+                <p class="card-subtitle">Sign in to your account to continue</p>
+            </div>
+
+            <!-- Login Form -->
+            <form action="#" method="POST" id="loginform">
+                <!-- Email Input -->
+                <div class="form-group">
+                    <label for="name" class="form-label">Name</label>
+                    <div class="input-wrapper">
+                        <input type="text" id="name" name="name" class="form-input" placeholder="Bob" required>
+                        <span class="input-icon">📧</span>
+                    </div>
+                </div>
+
+
+                <!-- Remember Me & Forgot Password -->
+                <div class="form-footer">
+                    <label class="checkbox-wrapper">
+                        <input type="checkbox" class="checkbox-input" id="remember" name="remember">
+                        <span class="checkbox-label">Remember me</span>
+                    </label>
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" class="btn btn-primary btn-block btn-lg">
+                    Sign In
+                </button>
+            </form>
+
+            <!-- Divider -->
+            <div class="divider">or</div>
+
+            <!-- Sign Up Link -->
+            <p class="text-center text-small">
+                Don't have an account?
+                <a href="signup.html" class="link">Sign up</a>
+            </p>
+        </div>
+    </div>
+    <script src="login.js"></script>
+</body>
+
+</html>

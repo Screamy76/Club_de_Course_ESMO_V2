@@ -1,0 +1,565 @@
+/* Modern 'Urban Energy' Theme */
+
+:root {
+  /* Brand Colors */
+  --primary-navy: #0F172A;
+  --primary-navy-light: #1E293B;
+  --accent-green: #00F055;
+  --accent-green-hover: #00CC49;
+
+  /* Text Colors */
+  --text-main: #334155;
+  --text-muted: #64748B;
+  --text-light: #F8FAFC;
+
+  /* Backgrounds */
+  --bg-body: #F1F5F9;
+  --bg-card: #FFFFFF;
+
+  /* UI Elements */
+  --border-radius-lg: 16px;
+  --border-radius-sm: 8px;
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+
+  /* Fonts */
+  --font-heading: 'Montserrat', sans-serif;
+  --font-body: 'Inter', sans-serif;
+}
+
+body {
+  background-color: var(--bg-body);
+  color: var(--text-main);
+  font-family: var(--font-body);
+  line-height: 1.6;
+  margin: 0;
+  padding: 0;
+}
+
+/* Typography */
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--font-heading);
+  color: var(--primary-navy);
+  margin-top: 0;
+}
+
+h1 {
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+h3 {
+  font-weight: 700;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+  transition: color 0.2s ease;
+}
+
+/* Header & Hero Section */
+header {
+  background-color: var(--primary-navy);
+  color: var(--text-light);
+  padding: 2rem 0 4rem;
+  /* Extra padding at bottom for overlap effect */
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Add a subtle pattern overlay to header if desired, or keep clean */
+header::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle at top right, rgba(0, 240, 85, 0.1), transparent);
+  pointer-events: none;
+}
+
+.club-title {
+  font-size: 3.5rem;
+  margin: 1rem auto 0.5rem;
+  color: var(--text-light);
+  max-width: 1200px;
+  padding: 0 24px;
+}
+
+.tagline {
+  font-size: 1.25rem;
+  color: #94A3B8;
+  /* Slate-400 */
+  margin: 0 auto 2rem;
+  max-width: 1200px;
+  padding: 0 24px;
+  font-weight: 400;
+}
+
+/* Navigation */
+nav {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  margin-top: 1.5rem;
+  position: relative;
+  z-index: 10;
+}
+
+nav a {
+  color: var(--text-light);
+  font-weight: 600;
+  font-size: 0.95rem;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  transition: all 0.2s ease;
+  opacity: 0.9;
+}
+
+nav a:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  opacity: 1;
+  color: var(--accent-green);
+}
+
+/* Main Layout */
+.hero-section {
+  padding-bottom: 4rem;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.info-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  /* Negative margin to pull cards up into the dark header */
+  margin-top: -3rem;
+  position: relative;
+  z-index: 5;
+}
+
+/* Cards */
+.card {
+  background-color: var(--bg-card);
+  border-radius: var(--border-radius-lg);
+  padding: 2rem;
+  box-shadow: var(--shadow-lg);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+.card h3 {
+  color: var(--primary-navy);
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.card p {
+  color: var(--text-muted);
+  font-size: 1rem;
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* CTA Section */
+.cta-section {
+  text-align: center;
+  margin: 4rem 0;
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+/* Buttons */
+.btn {
+  display: inline-block;
+  background-color: var(--accent-green);
+  color: var(--primary-navy);
+  font-weight: 700;
+  padding: 14px 32px;
+  border-radius: 50px;
+  border: none;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: var(--shadow-md);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-family: var(--font-heading);
+}
+
+.btn:hover {
+  background-color: var(--accent-green-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 15px -3px rgba(0, 240, 85, 0.3);
+}
+
+/* Secondary Button Style (if needed, or just style the Login differently) */
+a[href="login.html"] .btn,
+a[href="runs.html"] .btn {
+  background-color: white;
+  color: var(--primary-navy);
+  border: 2px solid var(--primary-navy);
+}
+
+a[href="login.html"] .btn:hover,
+a[href="runs.html"] .btn:hover {
+  background-color: var(--primary-navy);
+  color: white;
+  box-shadow: var(--shadow-md);
+}
+
+
+/* Footer / Contact */
+.contact-info {
+  text-align: center;
+  margin-top: 4rem;
+  padding-top: 2rem;
+  border-top: 1px solid #E2E8F0;
+  color: var(--text-muted);
+}
+
+.contact-info p {
+  margin: 0.5rem 0;
+}
+
+/* Inputs (Global) */
+input,
+textarea,
+select {
+  font-family: var(--font-body);
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"],
+textarea {
+  width: 100%;
+  padding: 12px 16px;
+  border: 2px solid #E2E8F0;
+  border-radius: var(--border-radius-sm);
+  font-size: 1rem;
+  transition: border-color 0.2s;
+  background: white;
+}
+
+input:focus,
+textarea:focus {
+  outline: none;
+  border-color: var(--primary-navy);
+  box-shadow: 0 0 0 3px rgba(15, 23, 42, 0.1);
+}
+
+/* Calendar Grid Layout */
+.weekly-schedule {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 16px;
+  margin: 2rem 0;
+}
+
+.day-card {
+  background: white;
+  border-radius: var(--border-radius-lg);
+  padding: 0;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid #E2E8F0;
+  overflow: hidden;
+  transition: transform 0.2s, box-shadow 0.2s;
+  display: flex;
+  flex-direction: column;
+}
+
+.day-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+  border-color: var(--accent-green);
+}
+
+.day-header {
+  background-color: var(--primary-navy);
+  color: white;
+  padding: 12px;
+  text-align: center;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  letter-spacing: 0.05em;
+}
+
+.day-content {
+  padding: 16px;
+  text-align: center;
+  min-height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 500;
+  color: var(--text-main);
+}
+
+.run-details {
+  background: white;
+  border-radius: var(--border-radius-lg);
+  padding: 2rem;
+  margin-top: 2rem;
+  text-align: center;
+  box-shadow: var(--shadow-md);
+  border: 1px solid #E2E8F0;
+}
+
+/* Mobile responsive adjustments for calendar */
+@media (max-width: 600px) {
+  .weekly-schedule {
+    grid-template-columns: 1fr;
+  }
+
+  .day-card {
+    flex-direction: row;
+    align-items: center;
+    min-height: auto;
+  }
+
+  .day-header {
+    width: 100px;
+    flex-shrink: 0;
+    text-align: left;
+    padding-left: 16px;
+  }
+
+  .day-content {
+    padding: 12px;
+    text-align: left;
+    justify-content: flex-start;
+    min-height: auto;
+  }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .club-title {
+    font-size: 2.5rem;
+  }
+
+  .info-cards {
+    margin-top: -2rem;
+    padding: 0 1rem;
+  }
+
+  .cta-section {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 0 2rem;
+  }
+
+  .btn {
+    width: 100%;
+  }
+}
+
+/* Login Page Styles */
+.animated-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: linear-gradient(135deg, var(--bg-body) 0%, #E2E8F0 100%);
+  z-index: -1;
+}
+
+.page-wrapper {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+/* Login Card Adjustments */
+.page-wrapper .card {
+  width: 100%;
+  max-width: 480px;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  padding: 2.5rem;
+}
+
+.card-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.card-title {
+  font-size: 2rem;
+  color: var(--primary-navy);
+  margin-bottom: 0.5rem;
+}
+
+.card-subtitle {
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  margin: 0;
+}
+
+/* Form Styles */
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+.form-label {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: var(--text-main);
+  font-weight: 500;
+  font-size: 0.9rem;
+}
+
+.input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.form-input {
+  width: 100%;
+  padding: 12px 16px;
+  padding-right: 40px;
+  /* Space for icon */
+  border: 2px solid #E2E8F0;
+  border-radius: var(--border-radius-sm);
+  font-size: 1rem;
+  transition: all 0.2s;
+  background: white;
+}
+
+.form-input:focus {
+  border-color: var(--primary-navy);
+  box-shadow: 0 0 0 3px rgba(15, 23, 42, 0.1);
+  outline: none;
+}
+
+.input-icon {
+  position: absolute;
+  right: 12px;
+  color: var(--text-muted);
+  font-size: 1.2rem;
+  pointer-events: none;
+}
+
+/* Checkbox */
+.form-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.checkbox-wrapper {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  user-select: none;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  transition: color 0.2s;
+}
+
+.checkbox-wrapper:hover {
+  color: var(--primary-navy);
+}
+
+.checkbox-input {
+  margin-right: 0.5rem;
+  width: 16px;
+  height: 16px;
+  accent-color: var(--primary-navy);
+}
+
+/* Button tweaks for form */
+.btn-block {
+  display: block;
+  width: 100%;
+}
+
+.divider {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  margin: 2rem 0;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.divider::before,
+.divider::after {
+  content: '';
+  flex: 1;
+  border-bottom: 1px solid #E2E8F0;
+}
+
+.divider::before {
+  margin-right: 1em;
+}
+
+.divider::after {
+  margin-left: 1em;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.text-small {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  margin-top: 0.5rem;
+}
+
+.link {
+  color: var(--primary-navy);
+  font-weight: 600;
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  transition: text-decoration-color 0.2s;
+}
+
+.link:hover {
+  text-decoration-color: var(--primary-navy);
+}
+
+/* Mobile Adjustments for Login */
+@media (max-width: 480px) {
+  .page-wrapper .card {
+    padding: 1.5rem;
+    max-width: 100%;
+    border-radius: 0;
+    box-shadow: none;
+    border: none;
+  }
+
+  .card-title {
+    font-size: 1.75rem;
+  }
+}

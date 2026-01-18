@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up - Stride Running Club</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Montserrat:wght@600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .signup-container {
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--text-dark);
+        }
+
+        .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            background-color: var(--pure-white);
+            color: var(--text-dark);
+            font-size: 16px;
+            cursor: pointer;
+            box-sizing: border-box;
+        }
+
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 0 3px rgba(135, 206, 235, 0.1);
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            width: auto;
+            margin-right: 10px;
+            cursor: pointer;
+        }
+
+        .btn-full {
+            width: 100%;
+        }
+
+        .back-link {
+            text-align: center;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container signup-container">
+        <div class="card">
+            <h1>Join Stride Running Club</h1>
+            <p>Fill out the form below to become a member!</p>
+
+            <form id="signupForm">
+                <div class="form-group">
+                    <label for="firstName">Name (Full Name)</label>
+                    <input type="text" id="firstName" name="firstName" required>
+                </div>
+
+                <!--<div class="form-group">
+                    <label for="lastName">Last Name *</label>
+                    <input type="text" id="lastName" name="lastName" required>
+                </div>-->
+
+                <!--<div class="form-group">
+                    <label for="email">Email Address *</label>
+                    <input type="email" id="email" name="email" required>
+                </div>-->
+
+                <div class="form-group">
+                    <label for="phone">Grade</label>
+                    <input type="text" id="grade" name="grade">
+                </div>
+
+                <div class="form-group">
+                    <label for="race">Race you would like to participate in *</label>
+                    <select id="race" name="race" required>
+                        <option value="TWR5K">Toronto Women's Run 5k</option>
+                        <option value="TWR10K">Toronto Women's Run 10k</option>
+                        <option value="SL10K">Sporting Life 10k</option>
+                    </select>
+                </div>
+
+                <!--<div class="form-group">
+                    <label for="preferredPace">Preferred Pace Group</label>
+                    <select id="preferredPace" name="preferredPace">
+                        <option value="">Select a pace...</option>
+                        <option value="8-9">8-9 min/mile</option>
+                        <option value="9-10">9-10 min/mile</option>
+                        <option value="10-11">10-11 min/mile</option>
+                        <option value="11+">11+ min/mile</option>
+                    </select>
+                </div>
+                
+                <div class="checkbox-group">
+                    <input type="checkbox" id="newsletter" name="newsletter">
+                    <label for="newsletter">Send me updates about club events and races</label>
+                </div>
+                
+                <div class="checkbox-group">
+                    <input type="checkbox" id="terms" name="terms" required>
+                    <label for="terms">I agree to the club's terms and conditions *</label>
+                </div>-->
+
+                <button type="submit" class="btn btn-full">Complete Sign Up</button>
+            </form>
+            <!--<input type="text" id="Code_check" name="Code_check" hidden="True">-->
+
+            <div class="back-link">
+                <a href="index.html">← Back to Home</a>
+            </div>
+        </div>
+    </div>
+
+    <script src="signup.js"></script>
+</body>
+
+</html>

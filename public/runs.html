@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Run Calendar | Run Club</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Montserrat:wght@600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <header>
+        <h1>Run Calendar</h1>
+        <nav>
+            <a href="index.html">Home</a>
+            <a href="runs.html">Calendar</a>
+            <a href="login.html">Login</a>
+        </nav>
+    </header>
+
+    <main>
+        <section class="calendar-controls">
+            <button id="prevMonth" class="btn">&lt; Previous</button>
+            <h2 id="currentMonth">December 2025</h2>
+            <button id="nextMonth" class="btn">Next &gt;</button>
+        </section>
+
+        <!--<section class="calendar">
+            <div class="calendar-header">
+                <span>Sun</span>
+                <span>Mon</span>
+                <span>Tue</span>
+                <span>Wed</span>
+                <span>Thu</span>
+                <span>Fri</span>
+                <span>Sat</span>
+            </div>
+            <div id="calendarDays" class="calendar-days">
+                 Days will be populated by runs.js 
+            </div>
+        </section>-->
+
+        <div class="weekly-schedule">
+            <div class="day-card">
+                <div class="day-header">Monday</div>
+                <div class="day-content" id="mon">Loading...</div>
+            </div>
+            <div class="day-card">
+                <div class="day-header">Tuesday</div>
+                <div class="day-content" id="tue">Loading...</div>
+            </div>
+            <div class="day-card">
+                <div class="day-header">Wednesday</div>
+                <div class="day-content" id="wed">Loading...</div>
+            </div>
+            <div class="day-card">
+                <div class="day-header">Thursday</div>
+                <div class="day-content" id="thu">Loading...</div>
+            </div>
+            <div class="day-card">
+                <div class="day-header">Friday</div>
+                <div class="day-content" id="fri">Loading...</div>
+            </div>
+            <div class="day-card">
+                <div class="day-header">Saturday</div>
+                <div class="day-content" id="sat">Loading...</div>
+            </div>
+            <div class="day-card">
+                <div class="day-header">Sunday</div>
+                <div class="day-content" id="sun">Loading...</div>
+            </div>
+        </div>
+
+        <section id="runDetails" class="run-details">
+            <h3>Today's Run</h3>
+            <p id="selectedDate"></p>
+            <p id="runDescription">Select a day to see your run</p>
+        </section>
+    </main>
+
+    <script src="runs.js"></script>
+</body>
+
+</html>
