@@ -37,7 +37,12 @@ git clone https://github.com/Screamy76/Club_de_Course_ESMO_V2.git
 cd Club_de_Course_ESMO_V2
 ```
 
-### 2. Initial Setup
+### 2. Required Files
+Ensure the following files are present in the root directory:
+- `Untitled spreadsheet - Sheet3.tsv` (Populates the calendar if DB is empty)
+- `database.js` (Handles SQLite logic and GCS sync)
+
+### 3. Initial Setup
 ```bash
 # Login to Google Cloud
 gcloud auth login
@@ -50,7 +55,7 @@ gcloud config set project $PROJECT_ID
 gcloud services enable run.googleapis.com cloudbuild.googleapis.com artifactregistry.googleapis.com storage.googleapis.com
 ```
 
-### 3. Infrastructure
+### 4. Infrastructure setup
 Create the Artifact Registry and Storage Bucket.
 
 ```bash
@@ -60,12 +65,14 @@ gcloud artifacts repositories create run-club-repo \
     --location=northamerica-northeast1 \
     --description="Docker repository for ESMO Run Club"
 
-# Create Bucket for DB Persistence
+# Create Bucket for DB Persistence (Must be unique)
 export BUCKET_NAME="esmo-runclub-db-$PROJECT_ID"
 gcloud storage buckets create gs://$BUCKET_NAME --location=northamerica-northeast1
+
+# (Optional) Verify the bucket is empty or upload an existing 'club.db' if you have one
 ```
 
-### 4. Deploy
+### 5. Deploy
 Build the container and deploy to Cloud Run.
 
 ```bash
@@ -73,9 +80,12 @@ Build the container and deploy to Cloud Run.
 gcloud builds submit --tag northamerica-northeast1-docker.pkg.dev/$PROJECT_ID/run-club-repo/app:latest .
 
 # Deploy to Cloud Run
+# Note: We set DB_BUCKET_NAME so the app knows where to sync the SQLite DB.
 gcloud run deploy esmo-runclub \
   --image northamerica-northeast1-docker.pkg.dev/$PROJECT_ID/run-club-repo/app:latest \
   --region northamerica-northeast1 \
   --allow-unauthenticated \
-  --set-env-vars=DB_BUCKET_NAME=$BUCKET_NAME
+  --set-env-vars=DB_BUCKET_NAME=$BUCKET_NAME \
+  --clear-volume-mounts \
+  --clear-volumes
 ```
