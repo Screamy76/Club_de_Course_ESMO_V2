@@ -24,7 +24,13 @@ If you want to deploy this application to your own Google Cloud project, follow 
 - [Google Cloud SDK](https://cloud.google.com/sdk/docs/install) installed and authenticated.
 - A Google Cloud Project with billing enabled.
 
-### 1. Initial Setup
+### 1. Get the Code
+```bash
+git clone https://github.com/Screamy76/Club_de_Course_ESMO_V2.git
+cd Club_de_Course_ESMO_V2
+```
+
+### 2. Initial Setup
 ```bash
 # Login to Google Cloud
 gcloud auth login
@@ -37,7 +43,7 @@ gcloud config set project $PROJECT_ID
 gcloud services enable run.googleapis.com cloudbuild.googleapis.com artifactregistry.googleapis.com storage.googleapis.com
 ```
 
-### 2. Infrastructure
+### 3. Infrastructure
 Create the Artifact Registry and Storage Bucket.
 
 ```bash
@@ -52,7 +58,7 @@ export BUCKET_NAME="esmo-runclub-db-$PROJECT_ID"
 gcloud storage buckets create gs://$BUCKET_NAME --location=northamerica-northeast1
 ```
 
-### 3. Deploy
+### 4. Deploy
 Build the container and deploy to Cloud Run.
 
 ```bash
