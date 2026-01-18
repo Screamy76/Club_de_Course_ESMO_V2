@@ -13,7 +13,7 @@ app.use(helmet({
 }));
 
 app.use(express.static("public", {
-    maxAge: "1d", // Cache static assets for 1 day
+    maxAge: "0", // Cache static assets for 1 day
     etag: true
 }));
 app.use(express.json());
