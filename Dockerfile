@@ -8,6 +8,8 @@ RUN npm install
 
 COPY --chown=node:node . .
 
+RUN chown -R node:node /app
+
 USER node
 
 EXPOSE 3000
