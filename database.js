@@ -5,7 +5,7 @@ import { Storage } from '@google-cloud/storage';
 
 dotenv.config();
 
-const dbFileName = 'running_club.db';
+const dbFileName = '/tmp/running_club.db';
 const bucketName = process.env.DB_BUCKET_NAME || 'esmo-runclub-db-to';
 const storage = new Storage();
 const bucket = storage.bucket(bucketName);
