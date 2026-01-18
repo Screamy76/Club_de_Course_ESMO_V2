@@ -6,8 +6,8 @@ A running club application for ESMO, built with Node.js.
 
 ```mermaid
 graph TD
-    User([User]) -->|HTTPS| CloudRun[Cloud Run Service<br>(Node.js App + SQLite)]
-    CloudRun -->|Reads on Boot| GCS[Cloud Storage Bucket<br>(esmo-runclub-db-to)]
+    User([User]) -->|HTTPS| CloudRun["Cloud Run Service<br>(Node.js App + SQLite)"]
+    CloudRun -->|Reads on Boot| GCS["Cloud Storage Bucket<br>(esmo-runclub-db-to)"]
     CloudRun -->|Writes every 5m| GCS
     
     subgraph Google Cloud Platform
