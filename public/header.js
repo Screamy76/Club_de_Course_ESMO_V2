@@ -1,4 +1,5 @@
 document.addEventListener("DOMContentLoaded", function () {
+    console.log("Header script loaded");
     const user = sessionStorage.getItem("user") || localStorage.getItem("user");
     const nav = document.querySelector("nav");
 
