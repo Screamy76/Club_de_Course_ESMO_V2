@@ -20,7 +20,7 @@ async function newRunner(name, run, age) {
         headers: {
             "Content-Type": "application/json"
         },
-        body: JSON.stringify({full_name: name, race: run, grade: age})
+        body: JSON.stringify({ full_name: name, race: run, grade: age })
     });
     console.log(request1.body);
     const result = await fetch(request1);
@@ -43,25 +43,31 @@ async function getRunner() {
     }
 };
 
-submit.addEventListener("submit", function (e) {
+submit.addEventListener("submit", async function (e) {
     e.preventDefault();
-    
+
     // Get form data
     const formData = {
         firstName: document.getElementById('firstName').value,
-        //lastName: document.getElementById('lastName').value,
-        //email: document.getElementById('email').value,
         grade: document.getElementById('grade').value,
         race: document.getElementById('race').value,
     };
     const name = formData.firstName;
-    const mail = formData.email;
     const race = formData.race;
     const grade = formData.grade;
-    const lastname = formData.lastName;
-    const fname = name + " " + lastname;
 
-    const result = newRunner(name, race, grade);
-    //console.log(result);
+    try {
+        const result = await newRunner(name, race, grade);
+        if (result.ok) {
+            alert("Sign up successful! Please log in.");
+            window.location.href = "login.html";
+        } else {
+            console.error(result);
+            alert("Sign up failed: " + result.statusText);
+        }
+    } catch (error) {
+        console.error("Error signing up:", error);
+        alert("An error occurred. Please try again.");
+    }
 
 })
