@@ -18,6 +18,13 @@ graph TD
     end
 ```
 
+## Administration
+### Bulk Calendar Update
+The application includes a hidden administrative interface for updating the run schedule via TSV file.
+- **URL**: `/admin.html`
+- **Function**: Wipes the current calendar and repopulates it from the uploaded TSV.
+- **Note**: This interface is currently **unauthenticated**.
+
 ## Security & Limitations
 > [!WARNING]
 > **No Authentication**: This application currently uses "honor-system" login. Users enter their name to log in, and there are **no passwords**.
