@@ -1,126 +1,292 @@
-import mysql from "mysql2"
+import sqlite3 from 'sqlite3';
+import fs from 'fs';
+import { readFile } from 'fs/promises';
+import dotenv from "dotenv";
+import { Storage } from '@google-cloud/storage';
 
-import dotenv from "dotenv"
-dotenv.config()
+dotenv.config();
 
-const pool = mysql.createPool({
-    host: process.env.MYSQL_HOST,
-    user: process.env.MYSQL_USER,
-    password: process.env.MYSQL_PASSWORD,
-    database: process.env.MYSQL_DATABASE
-}).promise()
+const dbFileName = '/tmp/running_club.db';
+const bucketName = process.env.DB_BUCKET_NAME || 'esmo-runclub-db-to';
+const storage = new Storage();
+const bucket = storage.bucket(bucketName);
 
-export async function getUsers () {
-    const [rows] = await pool.query("SELECT * FROM users")
-    return rows
+// --- Backup & Restore Logic ---
+
+async function downloadDatabase() {
+    console.log(`Checking for database in bucket: ${bucketName}...`);
+    try {
+        const file = bucket.file(dbFileName);
+        const [exists] = await file.exists();
+        if (exists) {
+            console.log("Database found in GCS. Downloading...");
+            await file.download({ destination: dbFileName });
+            console.log("Database downloaded successfully.");
+        } else {
+            console.log("No database found in GCS. Starting with fresh DB.");
+        }
+    } catch (error) {
+        console.error("Error checking/downloading database from GCS:", error);
+        // Continue even if download fails, to allow app to start
+    }
 }
 
-export async function getRunner (name){
-    const [rows] = await pool.query(`
+async function uploadDatabase() {
+    console.log("Backing up database to GCS...");
+    try {
+        if (!fs.existsSync(dbFileName)) {
+            console.log("No local database file to backup yet.");
+            return;
+        }
+        await bucket.upload(dbFileName, {
+            destination: dbFileName,
+            metadata: {
+                cacheControl: 'no-cache',
+            },
+        });
+        console.log("Database backup successful.");
+    } catch (error) {
+        console.error("Error uploading database to GCS:", error);
+    }
+}
+
+// Perform download BEFORE connecting to SQLite
+await downloadDatabase();
+
+// --- Database Connection ---
+
+const dbPromise = new sqlite3.Database(dbFileName, (err) => {
+    if (err) {
+        console.error('Could not connect to database', err);
+    } else {
+        console.log('Connected to SQLite database');
+        initializeDatabase();
+    }
+});
+
+// Setup Periodic Backup (every 5 minutes)
+const backupInterval = 5 * 60 * 1000;
+setInterval(uploadDatabase, backupInterval);
+
+// Setup Shutdown Backup
+async function handleShutdown() {
+    console.log("Shutting down... performing final backup.");
+    await uploadDatabase();
+    process.exit(0);
+}
+
+process.on('SIGINT', handleShutdown);
+process.on('SIGTERM', handleShutdown);
+
+// --- Standard Database Functions ---
+
+function run(sql, params = []) {
+    return new Promise((resolve, reject) => {
+        dbPromise.run(sql, params, function (err) {
+            if (err) reject(err);
+            else resolve(this);
+        });
+    });
+}
+
+function all(sql, params = []) {
+    return new Promise((resolve, reject) => {
+        dbPromise.all(sql, params, (err, rows) => {
+            if (err) reject(err);
+            else resolve(rows);
+        });
+    });
+}
+
+async function initializeDatabase() {
+    console.log("Initializing database schema...");
+
+    await run(`CREATE TABLE IF NOT EXISTS users (
+        id integer PRIMARY KEY AUTOINCREMENT,
+        full_name VARCHAR(255) NOT NULL,
+        race VARCHAR(255) NOT NULL,
+        tday DATE NOT NULL,
+        tday_run TEXT,
+        grade INT NOT NULL,
+        created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+    )`);
+
+    await run(`CREATE TABLE IF NOT EXISTS calendar (
+        id integer PRIMARY KEY AUTOINCREMENT,
+        run_day DATE NOT NULL,
+        TWR5K VARCHAR(255) NOT NULL,
+        TWR10K VARCHAR(255) NOT NULL,
+        SL10K VARCHAR(255) NOT NULL
+    )`);
+
+    // Check if calendar is empty, if so, populate from TSV
+    const rows = await all("SELECT COUNT(*) as count FROM calendar");
+    if (rows[0].count === 0) {
+        console.log("Calendar empty. Populating from TSV...");
+        try {
+            const tsvData = fs.readFileSync('Untitled spreadsheet - Sheet3.tsv', 'utf-8');
+            const lines = tsvData.trim().split('\n');
+            const headers = lines.shift();
+
+            for (const line of lines) {
+                const [run_day, TWR5K, TWR10K, SL10K] = line.split('\t');
+                if (run_day) {
+                    await run(`INSERT INTO calendar (run_day, TWR5K, TWR10K, SL10K) VALUES (?, ?, ?, ?)`,
+                        [run_day, TWR5K, TWR10K, SL10K]);
+                }
+            }
+            console.log("Calendar populated successfully.");
+            // Immediate backup after initial population
+            await uploadDatabase();
+        } catch (error) {
+            console.error("Error reading or processing TSV:", error);
+        }
+    } else {
+        console.log("Calendar already initialized.");
+    }
+}
+
+export async function getUsers() {
+    const rows = await all("SELECT * FROM users");
+    return rows;
+}
+
+export async function getRunner(name) {
+    const rows = await all(`
         SELECT *
         FROM users
         WHERE full_name = ?
-        `, [name])
-    return rows[0]
+        `, [name]);
+    return rows[0];
 }
 
-export async function createRunner(name, race, grade){
-    const today = new Date().toISOString().split('T')[0]
-    const [result] = await pool.query(`
+export async function createRunner(name, race, grade) {
+    const today = new Date().toISOString().split('T')[0];
+    const result = await run(`
         INSERT INTO users (full_name, race, tday, grade)
-        VALUES(?, ?, ?, ?)`, [name, race, today, grade])
-    const id = result.insertId;
-    return getRunner(name)
+        VALUES(?, ?, ?, ?)`, [name, race, today, grade]);
+    return getRunner(name);
 }
 
-export async function updatedate(){
-    const today = new Date().toISOString().split('T')[0]
-    console.log(today); 
-    // Output: "2025-12-22"
-    const [result] = await pool.query(`
+export async function updatedate() {
+    const today = new Date().toISOString().split('T')[0];
+    console.log("Updating date to:", today);
+
+    await run(`
         UPDATE users
         SET tday = ?
-        `, [today])
-    const [runs] = await pool.query(`
+        `, [today]);
+
+    const runs = await all(`
         SELECT TWR5K, TWR10K, SL10K
         FROM calendar
         WHERE run_day = ?
-        `, [today])
-    const run = runs
-    console.log(run)
-    const [TWR5K] = await pool.query(`
-        UPDATE users
-        SET tday_run = ?
-        WHERE race = "TWR5K"
-        `, [run.TWR5K])
-    const [TWR10K] = await pool.query(`
-        UPDATE users
-        SET tday_run = ?
-        WHERE race = "TWR10K"
-        `, [run.TWR10K])
-    const [SL10K] = await pool.query(`
-        UPDATE users
-        SET tday_run = ?
-        WHERE race = "SL10K"
-        `, [run.SL10K])
-    return result, TWR5K, TWR10K, SL10K
+        `, [today]);
+
+    const runData = runs[0];
+    if (!runData) {
+        console.log("No run data found for today.");
+        return;
+    }
+
+    await run(`UPDATE users SET tday_run = ? WHERE race = "TWR5K"`, [runData.TWR5K]);
+    await run(`UPDATE users SET tday_run = ? WHERE race = "TWR10K"`, [runData.TWR10K]);
+    await run(`UPDATE users SET tday_run = ? WHERE race = "SL10K"`, [runData.SL10K]);
+
+    return { result: "Updated", ...runData };
 }
 
-export async function addRuns(date, TWR5K, TWR10K, SL10K){
-    const [result] = await pool.query(`
+export async function addRuns(date, TWR5K, TWR10K, SL10K) {
+    const result = await run(`
         INSERT INTO calendar (run_day, TWR5K, TWR10K, SL10K)
         VALUES(?, ?, ?, ?)
-        `, [date, TWR5K, TWR10K, SL10K])
-    const id = result.insertId;
-    return id
+        `, [date, TWR5K, TWR10K, SL10K]);
+    return result.lastID;
 }
 
-export async function getRuns(date, code){
-    const [result] = await pool.query(`
-        SELECT ?
-        FROM calendar
-        WHERE run_day = ?
-        `, [date, code])
-    return result
-}
-
-export async function getCalendar(){
-    const [rows] = await pool.query("SELECT * FROM calendar")
-    return rows
-}
-
-export async function getCodedCalendar(code){
-    // Whitelist valid column names to prevent SQL injection
+export async function getRuns(date, code) {
     const validCodes = ['TWR5K', 'TWR10K', 'SL10K'];
     if (!validCodes.includes(code)) {
         throw new Error('Invalid race code');
     }
-    
-    const [rows] = await pool.query(`
-        SELECT ${code}, run_day
+
+    const rows = await all(`
+        SELECT ${code} as run
         FROM calendar
-        `)
-    return rows
+        WHERE run_day = ?
+        `, [date]);
+    return rows;
 }
 
-import fs from 'fs';
+export async function getCalendar() {
+    const rows = await all("SELECT * FROM calendar");
+    return rows;
+}
 
-// Read the TSV file
-const tsvData = fs.readFileSync('Untitled spreadsheet - Sheet3.tsv', 'utf-8');
+export async function getCodedCalendar(code) {
+    const validCodes = ['TWR5K', 'TWR10K', 'SL10K'];
+    if (!validCodes.includes(code)) {
+        throw new Error('Invalid race code');
+    }
 
-// Split into rows, then split each row by tabs
-const nestedArray = tsvData
-    .trim()                          // Remove trailing whitespace/newlines
-    .split('\n')                     // Split into rows
-    .map(row => row.split('\t'));    // Split each row by tabs
+    const rows = await all(`
+        SELECT ${code}, run_day
+        FROM calendar
+        `);
+    return rows;
+}
 
+export async function bulkUpdateCalendar(filePath) {
+    console.log(`Starting bulk update from file: ${filePath}`);
+    try {
+        const tsvData = await readFile(filePath, 'utf-8');
+        const lines = tsvData.trim().split('\n');
 
-const dataOnly = nestedArray.shift(); // Removes the first row (headers)
+        if (lines.length < 2) {
+            throw new Error("File appears to be empty or missing data rows");
+        }
 
-/*for (const row of nestedArray){
-    const result = await addRuns(row[0], row[1], row[2], row[3]);
-}*/
+        // Shift headers off
+        const headers = lines.shift().split('\t');
 
-//const runner = await createRunner("Lachlan Currie", "TWR10K", 10)
-const result = await updatedate();
-console.log(result);
+        console.log(`Parsing ${lines.length} rows...`);
+
+        await run("BEGIN TRANSACTION");
+
+        try {
+            // 1. Clear existing calendar
+            await run("DELETE FROM calendar");
+            await run("DELETE FROM sqlite_sequence WHERE name='calendar'");
+
+            // 2. Insert new rows
+            for (const line of lines) {
+                const cols = line.split('\t');
+                const run_day = cols[0];
+                const TWR5K = cols[1] || "";
+                const TWR10K = cols[2] || "";
+                const SL10K = cols[3] || "";
+
+                if (run_day) {
+                    await run(`INSERT INTO calendar (run_day, TWR5K, TWR10K, SL10K) VALUES (?, ?, ?, ?)`,
+                        [run_day, TWR5K, TWR10K, SL10K]);
+                }
+            }
+
+            await run("COMMIT");
+            console.log("Bulk update committed successfully.");
+
+            // 3. Trigger Backup
+            await uploadDatabase();
+
+            return { success: true, count: lines.length };
+
+        } catch (dbError) {
+            await run("ROLLBACK");
+            throw dbError;
+        }
+
+    } catch (error) {
+        console.error("Bulk update failed:", error);
+        throw error;
+    }
+}

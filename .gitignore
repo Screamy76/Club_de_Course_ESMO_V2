@@ -3,6 +3,9 @@ node_modules/
 
 # Environment variables
 .env
+README_LOCAL.md
+google-cloud-sdk/
+google-cloud-cli-linux-x86_64.tar.gz
 
 # OS files
 .DS_Store
