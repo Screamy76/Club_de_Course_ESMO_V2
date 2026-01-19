@@ -1,5 +1,6 @@
 import sqlite3 from 'sqlite3';
 import fs from 'fs';
+import { readFile } from 'fs/promises';
 import dotenv from "dotenv";
 import { Storage } from '@google-cloud/storage';
 
@@ -26,7 +27,7 @@ async function downloadDatabase() {
         }
     } catch (error) {
         console.error("Error checking/downloading database from GCS:", error);
-        // Continue even if download fails, to allow app to start (though data might be missing)
+        // Continue even if download fails, to allow app to start
     }
 }
 
@@ -50,7 +51,6 @@ async function uploadDatabase() {
 }
 
 // Perform download BEFORE connecting to SQLite
-// Top-level await is supported in Node.js ES modules
 await downloadDatabase();
 
 // --- Database Connection ---
@@ -234,4 +234,59 @@ export async function getCodedCalendar(code) {
         FROM calendar
         `);
     return rows;
+}
+
+export async function bulkUpdateCalendar(filePath) {
+    console.log(`Starting bulk update from file: ${filePath}`);
+    try {
+        const tsvData = await readFile(filePath, 'utf-8');
+        const lines = tsvData.trim().split('\n');
+
+        if (lines.length < 2) {
+            throw new Error("File appears to be empty or missing data rows");
+        }
+
+        // Shift headers off
+        const headers = lines.shift().split('\t');
+
+        console.log(`Parsing ${lines.length} rows...`);
+
+        await run("BEGIN TRANSACTION");
+
+        try {
+            // 1. Clear existing calendar
+            await run("DELETE FROM calendar");
+            await run("DELETE FROM sqlite_sequence WHERE name='calendar'");
+
+            // 2. Insert new rows
+            for (const line of lines) {
+                const cols = line.split('\t');
+                const run_day = cols[0];
+                const TWR5K = cols[1] || "";
+                const TWR10K = cols[2] || "";
+                const SL10K = cols[3] || "";
+
+                if (run_day) {
+                    await run(`INSERT INTO calendar (run_day, TWR5K, TWR10K, SL10K) VALUES (?, ?, ?, ?)`,
+                        [run_day, TWR5K, TWR10K, SL10K]);
+                }
+            }
+
+            await run("COMMIT");
+            console.log("Bulk update committed successfully.");
+
+            // 3. Trigger Backup
+            await uploadDatabase();
+
+            return { success: true, count: lines.length };
+
+        } catch (dbError) {
+            await run("ROLLBACK");
+            throw dbError;
+        }
+
+    } catch (error) {
+        console.error("Bulk update failed:", error);
+        throw error;
+    }
 }
