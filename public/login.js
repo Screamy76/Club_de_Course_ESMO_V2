@@ -21,19 +21,19 @@ submit.addEventListener("submit", async function (e) {
 
         if (result) {
             sessionStorage.setItem('user', formData.name);
-            console.log("Logged in as: " + formData.name);
+            console.log("Connecte en tant que: " + formData.name);
 
             if (document.getElementById("remember").checked) {
                 localStorage.setItem("user", formData.name);
             }
 
-            alert("Welcome back, " + formData.name + "!");
+            alert("Bienvenue, " + formData.name + "!");
             window.location.href = "runs.html";
         } else {
-            alert("User not found. Please sign up first.");
+            alert("Utilisateur non trouve. Veuillez vous inscrire.");
         }
     } catch (error) {
-        console.error("Login error:", error);
-        alert("Login failed. Please try again.");
+        console.error("Erreur de connexion:", error);
+        alert("Connexion reussie. Veuillez réessayer.");
     }
 });
