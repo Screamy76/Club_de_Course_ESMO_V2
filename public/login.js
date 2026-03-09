@@ -8,25 +8,32 @@ async function getRunners(name) {
     return data
 };
 
-submit.addEventListener("submit", function (e){
+submit.addEventListener("submit", async function (e) {
     e.preventDefault();
 
     const formData = {
-        name : document.getElementById("name").value,
-        remember : document.getElementById("remember").value
+        name: document.getElementById("name").value,
+        remember: document.getElementById("remember").value
     }
 
-    const result = getRunners(formData.name);
-    sessionStorage.setItem('user', formData.name);
-    const name = sessionStorage.getItem("user");
-    console.log(name)
-    if(formData.remember){
-        // Set the variable (in any JS file)
-        localStorage.setItem("user", formData.name);
+    try {
+        const result = await getRunners(formData.name);
 
-        // Get the variable (in any other JS file)
-        const name = localStorage.getItem("user");
-        console.log(name);
+        if (result) {
+            sessionStorage.setItem('user', formData.name);
+            console.log("Logged in as: " + formData.name);
 
+            if (document.getElementById("remember").checked) {
+                localStorage.setItem("user", formData.name);
+            }
+
+            alert("Welcome back, " + formData.name + "!");
+            window.location.href = "runs.html";
+        } else {
+            alert("User not found. Please sign up first.");
+        }
+    } catch (error) {
+        console.error("Login error:", error);
+        alert("Login failed. Please try again.");
     }
 });
