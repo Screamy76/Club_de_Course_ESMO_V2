@@ -68,16 +68,27 @@ function getWeekDates(inputDate) {
 // Get this week's dates
 const thisWeek = getWeekDates(day);
 
+const getSessionUser = () => {
+    const user = sessionStorage.getItem("user") || localStorage.getItem("user");
+    if (!user) return null;
+    try {
+        const parsed = JSON.parse(user);
+        return parsed.full_name || parsed;
+    } catch (e) {
+        return user;
+    }
+};
+
 prev.addEventListener("click", () => {
     day.setDate(day.getDate() - 7);
     Day.textContent = "Semaine du " + day.toISOString().split('T')[0];
     const thisWeek = getWeekDates(day);
     (async () => {
-        const user = localStorage.getItem("user");
-        if (!user) return;
-        const result = await getRunners(user);  // Get user info (includes race code)
+        const userName = getSessionUser();
+        if (!userName) return;
+        const result = await getRunners(userName);  // Get user info (includes race code)
         if (!result) return;
-        console.log(user, result);
+        console.log(userName, result);
 
         // Get all runs for this user's race
         const allRuns = await getRun(thisWeek[0], result.race);
@@ -111,11 +122,11 @@ next.addEventListener("click", () => {
     Day.textContent = "Semaine du " + day.toISOString().split('T')[0];
     const thisWeek = getWeekDates(day);
     (async () => {
-        const user = localStorage.getItem("user");
-        if (!user) return;
-        const result = await getRunners(user);  // Get user info (includes race code)
+        const userName = getSessionUser();
+        if (!userName) return;
+        const result = await getRunners(userName);  // Get user info (includes race code)
         if (!result) return;
-        console.log(user, result);
+        console.log(userName, result);
 
         // Get all runs for this user's race
         const allRuns = await getRun(thisWeek[0], result.race);
@@ -146,21 +157,20 @@ next.addEventListener("click", () => {
 
 // Wrap in an async IIFE (Immediately Invoked Function Expression)
 (async () => {
-    const user = localStorage.getItem("user");
-    if (!user) {
-        console.log("No user found in localStorage, redirecting to login.");
+    const userName = getSessionUser();
+    if (!userName) {
+        console.log("No user found in storage, redirecting to login.");
         window.location.href = "login.html";
         return;
     }
 
-    const result = await getRunners(user);  // Get user info (includes race code)
+    const result = await getRunners(userName);  // Get user info (includes race code)
     if (!result) {
         console.log("User not found in database, redirecting to login.");
-        // alert("Session expirée ou utilisateur non trouvé. Veuillez vous reconnecter.");
         window.location.href = "login.html";
         return;
     }
-    console.log(user, result);
+    console.log(userName, result);
 
     // Get all runs for this user's race
     const allRuns = await getRun(thisWeek[0], result.race);
