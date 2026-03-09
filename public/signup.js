@@ -59,11 +59,11 @@ submit.addEventListener("submit", async function (e) {
     try {
         const result = await newRunner(name, race, grade);
         if (result.ok) {
-            alert("Sign up successful! Please log in.");
+            alert("Inscription reussie! Veuillez vous connecter.");
             window.location.href = "login.html";
         } else {
             console.error(result);
-            alert("Sign up failed: " + result.statusText);
+            alert("Inscription reussie: " + result.statusText);
         }
     } catch (error) {
         console.error("Error signing up:", error);

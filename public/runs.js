@@ -18,7 +18,7 @@ async function getRun(day, code) {
 var calendar = document.getElementById("calendar");
 var Day = document.getElementById("currentMonth");
 const day = new Date();
-Day.textContent = "Week of " + day.toISOString().split('T')[0];
+Day.textContent = "Semaine du " + day.toISOString().split('T')[0];
 
 var mon = document.getElementById("mon");
 var tue = document.getElementById("tue");
@@ -65,7 +65,7 @@ const thisWeek = getWeekDates(new Date());
             return runDate === dateString;
         });
         // Return the run value or a default message if not found
-        return run ? run[result.race] : "No run scheduled";
+        return run ? run[result.race] : "Aucune course prévue";
     }
     
     // Assign to your table cells
