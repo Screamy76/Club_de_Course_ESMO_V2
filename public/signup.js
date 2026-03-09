@@ -59,6 +59,8 @@ submit.addEventListener("submit", async function (e) {
     try {
         const result = await newRunner(name, race, grade);
         if (result.ok) {
+            const userData = JSON.stringify({ full_name: name, race: race });
+            localStorage.setItem('user', userData);
             alert("Inscription reussie! Veuillez vous connecter.");
             window.location.href = "login.html";
         } else {

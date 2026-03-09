@@ -4,6 +4,12 @@ document.addEventListener("DOMContentLoaded", function () {
     const nav = document.querySelector("nav");
 
     if (user && nav) {
+        let userData;
+        try {
+            userData = JSON.parse(user);
+        } catch (e) {
+            userData = { full_name: user };
+        }
         // Find existing Login link
         const loginLink = nav.querySelector('a[href="login.html"]');
 
@@ -13,11 +19,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
             // Create User Name element
             const userSpan = document.createElement("span");
-            userSpan.textContent = `Logged in as ${user}`;
+            userSpan.textContent = `Logged in as ${userData.full_name || userData}`;
             userSpan.style.color = "var(--accent-green)"; // Use theme color
             userSpan.style.fontWeight = "600";
             userSpan.style.marginRight = "1rem";
             userSpan.style.alignSelf = "center";
+            userSpan.style.display = "block"; // Ensure it stacks on mobile if needed
+            userSpan.style.margin = "0.5rem 0";
 
             // Create Sign Out button
             const signOutBtn = document.createElement("a");

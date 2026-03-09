@@ -107,10 +107,12 @@ header::before {
 nav {
   display: flex;
   justify-content: center;
-  gap: 2rem;
+  gap: 1rem;
   margin-top: 1.5rem;
   position: relative;
   z-index: 10;
+  flex-wrap: wrap;
+  padding: 0 16px;
 }
 
 nav a {
@@ -356,22 +358,39 @@ textarea:focus {
 /* Responsive */
 @media (max-width: 768px) {
   .club-title {
-    font-size: 2.5rem;
+    font-size: 2rem;
+    padding: 0 20px;
+  }
+
+  .tagline {
+    font-size: 1.1rem;
+    padding: 0 20px;
+  }
+
+  nav {
+    gap: 0.5rem;
+  }
+
+  nav a {
+    font-size: 0.85rem;
+    padding: 0.4rem 0.8rem;
   }
 
   .info-cards {
     margin-top: -2rem;
-    padding: 0 1rem;
+    padding: 0 1.5rem;
   }
 
   .cta-section {
     flex-direction: column;
     align-items: stretch;
     padding: 0 2rem;
+    gap: 1rem;
   }
 
   .btn {
     width: 100%;
+    padding: 12px 24px;
   }
 }
 
@@ -384,6 +403,12 @@ textarea:focus {
   height: 100vh;
   background: linear-gradient(135deg, var(--bg-body) 0%, #E2E8F0 100%);
   z-index: -1;
+}
+
+main {
+  padding: 1rem 1.5rem;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
 .page-wrapper {
@@ -561,5 +586,53 @@ textarea:focus {
 
   .card-title {
     font-size: 1.75rem;
+  }
+}
+/* Enhanced Mobile Adjustments */
+@media (max-width: 480px) {
+  .page-wrapper {
+    padding: 12px;
+  }
+
+  .page-wrapper .card {
+    padding: 1.5rem;
+    max-width: 100%;
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-lg);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+  }
+
+  .card-title {
+    font-size: 1.75rem;
+  }
+
+  .form-footer {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  main {
+    padding: 1rem 1rem;
+  }
+
+  .calendar-controls {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: stretch;
+  }
+
+  .calendar-controls h2 {
+    font-size: 1.25rem;
+    order: -1;
+    text-align: center;
+  }
+
+  .calendar-controls .btn {
+    width: 100%;
+  }
+
+  .weekly-schedule {
+    gap: 1.5rem;
   }
 }
