@@ -34,6 +34,9 @@ app.get("/calendar", async (req, res) => {
 app.get("/users/:full_name", async (req, res) => {
     const name = req.params.full_name
     const runner = await getRunner(name)
+    if (!runner) {
+        return res.status(404).json({ error: "User not found" });
+    }
     res.send(runner)
 });
 
@@ -53,6 +56,9 @@ app.get("/calendar/:code/:day", async (req, res) => {
 app.get("/calendar/:code", async (req, res) => {
     const code = req.params.code
     const calendar = await getCodedCalendar(code)
+    if (!calendar || calendar.length === 0) {
+        return res.status(404).json({ error: "Calendar not found" });
+    }
     res.send(calendar)
 });
 
