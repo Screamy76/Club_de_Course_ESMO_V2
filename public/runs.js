@@ -32,12 +32,33 @@ async function getRun(day, code) {
     }
 }
 
+function sundayset(inputDate) {
+    const dayOfWeek = inputDate.getDay();
+    let sundayOffset;
+    if (dayOfWeek === 0) {
+        sundayOffset = 0;
+    } else {
+        sundayOffset = 7 - dayOfWeek;
+    }
+    const sunday = new Date(inputDate);
+    sunday.setDate(inputDate.getDate() + sundayOffset);
+    return sunday;
+}
+
 
 
 var calendar = document.getElementById("calendar");
 var Day = document.getElementById("currentWeek");
-const day = new Date();
-Day.textContent = "Semaine du " + day.toISOString().split('T')[0];
+function getETDate() {
+    // This creates a string in ET then turns it back into a Date object 
+    // that represents that specific moment in ET.
+    return new Date(new Date().toLocaleString("en-US", {timeZone: "America/New_York"}));
+}
+
+// Then use it in your existing code:
+const day = getETDate();
+day.setDate(day.getDate() - 7);
+Day.textContent = "Semaine du " + sundayset(day).toISOString().split('T')[0];
 var prev = document.getElementById("prevWeek");
 var next = document.getElementById("nextWeek");
 
@@ -51,15 +72,12 @@ var sun = document.getElementById("sun");
 
 function getWeekDates(inputDate) {
     const date = new Date(inputDate);
-    const dayOfWeek = date.getDay();
-    const mondayOffset = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
-    const monday = new Date(date);
-    monday.setDate(date.getDate() + mondayOffset);
+    const sunday = sundayset(date);
 
     const weekDates = [];
     for (let i = 0; i < 7; i++) {
-        const day = new Date(monday);
-        day.setDate(monday.getDate() + i);
+        const day = new Date(sunday);
+        day.setDate(sunday.getDate() + i);
         weekDates.push(day.toISOString().split('T')[0]); // Format: "2025-05-03"
     }
     return weekDates;
@@ -80,7 +98,7 @@ const getSessionUser = () => {
 };
 
 prev.addEventListener("click", () => {
-    day.setDate(day.getDate() - 7);
+    day.setDate(sundayset(day).getDate() - 7);
     Day.textContent = "Semaine du " + day.toISOString().split('T')[0];
     const thisWeek = getWeekDates(day);
     (async () => {
@@ -118,7 +136,7 @@ prev.addEventListener("click", () => {
 });
 
 next.addEventListener("click", () => {
-    day.setDate(day.getDate() + 7);
+    day.setDate(sundayset(day).getDate() + 7);
     Day.textContent = "Semaine du " + day.toISOString().split('T')[0];
     const thisWeek = getWeekDates(day);
     (async () => {
